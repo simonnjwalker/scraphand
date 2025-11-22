@@ -1,0 +1,29 @@
+{
+  "name": "scraphand",
+  "version": "1.0.0",
+  "description": "TypeScript project for ScrapHand v1 (.SH1)",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc -w",
+    "start": "ts-node src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simonnjwalker/scraphand.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/simonnjwalker/scraphand/issues"
+  },
+  "homepage": "https://github.com/simonnjwalker/scraphand#readme",
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
