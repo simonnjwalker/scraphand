@@ -1,0 +1,63 @@
+{
+  "name": "vscode",
+  "displayName": "Scraphand (.sh1)",
+  "description": "VS Code support for the Scraphand (.sh1) language",
+  "version": "0.0.1",
+  "publisher": "scraphand",
+  "author": "Simon Walker",
+  "license": "MIT",
+  "private": true,
+
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+
+  "categories": ["Programming Languages"],
+
+  "main": "dist/extension.js",
+
+  "activationEvents": [
+    "onLanguage:scraphand"
+  ],
+
+  "contributes": {
+    "languages": [
+      {
+        "id": "scraphand",
+        "aliases": ["Scraphand", "sh1"],
+        "extensions": [".sh1"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "scraphand",
+        "scopeName": "source.scraphand",
+        "path": "./syntaxes/scraphand.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "scraphand.showAst",
+        "title": "Scraphand: Show AST for Current File"
+      }
+    ]
+  },
+
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rmdir /s /q dist"
+  },
+
+  "dependencies": {
+    "engine": "file:../engine"
+  }
+
+,
+
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.4.0"
+  }
+}

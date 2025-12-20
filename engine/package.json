@@ -1,0 +1,28 @@
+{
+  "name": "engine",
+  "version": "0.0.1",
+  "description": "Core language engine for the Scraphand (.sh1) language",
+  "author": "Simon Walker",
+  "license": "MIT",
+
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+
+  "files": [
+    "dist"
+  ],
+
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rmdir /s /q dist",
+    "dev": "npm run build && node dist/dev-test.js"
+  },
+
+  "dependencies": {
+  },
+
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "@types/node": "^20.0.0"
+  }
+}
