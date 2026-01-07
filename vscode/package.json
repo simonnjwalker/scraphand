@@ -12,13 +12,16 @@
     "vscode": "^1.90.0"
   },
 
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/simonnjwalker/scraphand.git"
+  },
+
   "categories": ["Programming Languages"],
 
   "main": "dist/extension.js",
 
-  "activationEvents": [
-    "onLanguage:scraphand"
-  ],
+  "activationEvents": ["onLanguage:scraphand"],
 
   "contributes": {
     "languages": [
@@ -49,15 +52,21 @@
     "clean": "rmdir /s /q dist"
   },
 
-  "dependencies": {
-    "engine": "file:../engine"
-  }
-
-,
-
   "devDependencies": {
     "@types/node": "^20.0.0",
     "@types/vscode": "^1.90.0",
     "typescript": "^5.4.0"
-  }
+  },
+
+  "files": [
+    "dist/**",
+    "language-configuration.json",
+    "syntaxes/**",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ]
+
+
+  
 }

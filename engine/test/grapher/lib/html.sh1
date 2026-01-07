@@ -1,0 +1,4 @@
+// My HTML library.
+{define:h1}
+{define:p}
+{define:div}

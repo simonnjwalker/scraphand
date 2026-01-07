@@ -1,3 +1,7 @@
+## [1.0.2] - 2026-01-07
+### Added
+- Simple intellisense for .sh1 files
+
 ## [1.0.1] - 2025-12-20
 ### Added
 - Split the repository into 'engine' and 'vscode' projects.

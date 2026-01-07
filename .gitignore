@@ -150,3 +150,6 @@ vscode/dist/
 *.log
 .DS_Store
 .vscode-test/
+
+# created extensions
+**/*.vsix

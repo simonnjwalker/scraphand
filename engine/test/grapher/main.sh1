@@ -1,3 +1,25 @@
-Main file text.
+// This is my main test file
+This text is before the import.
 {import:lib/html.sh1}
-After import.
+This text is after the import.
+
+{RedPlanet2015}
+
+
+
+{h1:This is my first H1 heading}
+
+Something interesting happened on Pluto {cite:RedPlanet2015}.
+
+
+{{{
+
+@misc{RedPlanet2015,
+title        = "Pluto: The 'Other' Red Planet",
+author       = "{NASA}",
+howpublished = "\url{https://www.nasa.gov/nh/pluto-the-other-red-planet}",
+year         = 2015,
+note         = "Accessed: 2018-12-06"
+}
+
+}}}
