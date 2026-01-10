@@ -2,3 +2,4 @@
 {define:h1}
 {define:p}
 {define:div}
+//{config:bibliography.style=apa7}

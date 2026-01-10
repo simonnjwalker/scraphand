@@ -1,0 +1,540 @@
+
+
+
+
+{config:importset=fileDir,paths+=lib,paths+=engine/lib}
+
+{config:plugins+=core,plugins+=html,plugins+=bibtex,plugins+=latex,plugins+=docx,outputs+=type=docx path=out/report.docx}
+
+{config:bibliography.style=apa7}
+
+
+
+{config:importing.rootdir=fileDir,importing.paths+=lib,importing.paths+=engine/lib}
+
+{config:plugins+=core,plugins+=html,plugins+=bibtex,plugins+=latex,plugins+=docx,outputs+=[type=docx,path=out/report.docx]}
+
+{config:bibliography.style=apa7}
+
+
+
+
+
+
+begin}
+
+{map:imports}
+  {set:base=fileDir}
+  {list:searchPaths}
+    {item:lib}
+    {item:engine/lib}
+  {list:end}
+{map:end}
+
+{list:plugins}
+  {item:core}
+  {item:html}
+  {item:bibtex}
+  {item:latex}
+  {item:docx}
+{list:end}
+
+{list:outputs}
+  {item:type=docx path=out/report.docx}
+{list:end}
+
+{map:bibliography}
+  {set:style=apa}
+{map:end}
+
+{config:end}
+
+
+
+
+
+
+node -e "const fs=require('fs'); const {parse}=require('./dist/core/parser'); const src=fs.readFileSync('test/main.sh1','utf8'); console.log(JSON.stringify(parse(src),null,2));"
+
+
+
+{
+  "type": "Document",
+  "fileName": "<stdin>",
+  "range": {
+    "start": {
+      "line": 1,
+      "column": 1,
+      "offset": 0
+    },
+    "end": {
+      "offset": 479,
+      "line": 22,
+      "column": 15
+    }
+  },
+  "children": [
+    {
+      "type": "Text",
+      "value": "\nThis text is before the import.\r\n",
+      "range": {
+        "start": {
+          "offset": 0,
+          "line": 1,
+          "column": 1
+        },
+        "end": {
+          "offset": 34,
+          "line": 2,
+          "column": 5
+        }
+      },
+      "raw": "// This is my main test file\r\nThis"
+    },
+    {
+      "type": "Command",
+      "rawContent": "import:lib/html.sh1",
+      "range": {
+        "start": {
+          "offset": 34,
+          "line": 2,
+          "column": 5
+        },
+        "end": {
+          "offset": 55,
+          "line": 2,
+          "column": 26
+        }
+      },
+      "raw": " text is before the i"
+    },
+    {
+      "type": "Text",
+      "value": "\r\nThis text is after the import.\r\n",
+      "range": {
+        "start": {
+          "offset": 55,
+          "line": 2,
+          "column": 26
+        },
+        "end": {
+          "offset": 89,
+          "line": 4,
+          "column": 4
+        }
+      },
+      "raw": "mport.\r\n{import:lib/html.sh1}\r\nThi"
+    },
+    {
+      "type": "Command",
+      "rawContent": "RedPlanet2015",
+      "range": {
+        "start": {
+          "offset": 89,
+          "line": 4,
+          "column": 4
+        },
+        "end": {
+          "offset": 104,
+          "line": 4,
+          "column": 19
+        }
+      },
+      "raw": "s text is after"
+    },
+    {
+      "type": "Text",
+      "value": "\r\n\r\n",
+      "range": {
+        "start": {
+          "offset": 104,
+          "line": 4,
+          "column": 19
+        },
+        "end": {
+          "offset": 108,
+          "line": 4,
+          "column": 23
+        }
+      },
+      "raw": " the"
+    },
+    {
+      "type": "Text",
+      "value": "\n",
+      "range": {
+        "start": {
+          "offset": 108,
+          "line": 4,
+          "column": 23
+        },
+        "end": {
+          "offset": 109,
+          "line": 4,
+          "column": 24
+        }
+      },
+      "raw": " "
+    },
+    {
+      "type": "Command",
+      "rawContent": "define:doc",
+      "range": {
+        "start": {
+          "offset": 109,
+          "line": 4,
+          "column": 24
+        },
+        "end": {
+          "offset": 121,
+          "line": 5,
+          "column": 4
+        }
+      },
+      "raw": "import.\r\n{Re"
+    },
+    {
+      "type": "Text",
+      "value": "\r\n\r\n\r\n",
+      "range": {
+        "start": {
+          "offset": 121,
+          "line": 5,
+          "column": 4
+        },
+        "end": {
+          "offset": 127,
+          "line": 5,
+          "column": 10
+        }
+      },
+      "raw": "dPlane"
+    },
+    {
+      "type": "Command",
+      "rawContent": "h1:This is my first H1 heading",
+      "range": {
+        "start": {
+          "offset": 127,
+          "line": 5,
+          "column": 10
+        },
+        "end": {
+          "offset": 159,
+          "line": 7,
+          "column": 23
+        }
+      },
+      "raw": "t2015}\r\n\r\n// This defines a comm"
+    },
+    {
+      "type": "Text",
+      "value": "\r\n\r\nSomething interesting happened on Pluto ",
+      "range": {
+        "start": {
+          "offset": 159,
+          "line": 7,
+          "column": 23
+        },
+        "end": {
+          "offset": 203,
+          "line": 11,
+          "column": 22
+        }
+      },
+      "raw": "and\r\n{define:doc}\r\n\r\n\r\n{h1:This is my first "
+    },
+    {
+      "type": "Command",
+      "rawContent": "cite:RedPlanet2015",
+      "range": {
+        "start": {
+          "offset": 203,
+          "line": 11,
+          "column": 22
+        },
+        "end": {
+          "offset": 223,
+          "line": 13,
+          "column": 6
+        }
+      },
+      "raw": "H1 heading}\r\n\r\nSomet"
+    },
+    {
+      "type": "Text",
+      "value": ".\r\n\r\n\r\n",
+      "range": {
+        "start": {
+          "offset": 223,
+          "line": 13,
+          "column": 6
+        },
+        "end": {
+          "offset": 230,
+          "line": 13,
+          "column": 13
+        }
+      },
+      "raw": "hing in"
+    },
+    {
+      "type": "LiteralBlock",
+      "delimiterLength": 3,
+      "content": "\r\n\r\n@misc{RedPlanet2015,\r\ntitle        = \"Pluto: The 'Other' Red Planet\",\r\nauthor       = \"{NASA}\",\r\nhowpublished = \"\\url{https://www.nasa.gov/nh/pluto-the-other-red-planet}\",\r\nyear         = 2015,\r\nnote         = \"Accessed: 2018-12-06\"\r\n}\r\n\r\n",
+      "range": {
+        "start": {
+          "offset": 230,
+          "line": 13,
+          "column": 13
+        },
+        "end": {
+          "offset": 479,
+          "line": 22,
+          "column": 15
+        }
+      },
+      "raw": "teresting happened on Pluto {cite:RedPlanet2015}.\r\n\r\n\r\n{{{\r\n\r\n@misc{RedPlanet2015,\r\ntitle        = \"Pluto: The 'Other' Red Planet\",\r\nauthor       = \"{NASA}\",\r\nhowpublished = \"\\url{https://www.nasa.gov/nh/pluto-the-other-red-planet}\",\r\nyear         ="
+    }
+  ]
+}
+{
+  "type": "Document",
+  "fileName": "<stdin>",
+  "range": {
+    "start": {
+      "line": 1,
+      "column": 1,
+      "offset": 0
+    },
+    "end": {
+      "offset": 479,
+      "line": 22,
+      "column": 15
+    }
+  },
+  "children": [
+    {
+      "type": "Text",
+      "value": "\nThis text is before the import.\r\n",
+      "range": {
+        "start": {
+          "offset": 0,
+          "line": 1,
+          "column": 1
+        },
+        "end": {
+          "offset": 34,
+          "line": 2,
+          "column": 5
+        }
+      },
+      "raw": "// This is my main test file\r\nThis"
+    },
+    {
+      "type": "Command",
+      "rawContent": "import:lib/html.sh1",
+      "range": {
+        "start": {
+          "offset": 34,
+          "line": 2,
+          "column": 5
+        },
+        "end": {
+          "offset": 55,
+          "line": 2,
+          "column": 26
+        }
+      },
+      "raw": " text is before the i"
+    },
+    {
+      "type": "Text",
+      "value": "\r\nThis text is after the import.\r\n",
+      "range": {
+        "start": {
+          "offset": 55,
+          "line": 2,
+          "column": 26
+        },
+        "end": {
+          "offset": 89,
+          "line": 4,
+          "column": 4
+        }
+      },
+      "raw": "mport.\r\n{import:lib/html.sh1}\r\nThi"
+    },
+    {
+      "type": "Command",
+      "rawContent": "RedPlanet2015",
+      "range": {
+        "start": {
+          "offset": 89,
+          "line": 4,
+          "column": 4
+        },
+        "end": {
+          "offset": 104,
+          "line": 4,
+          "column": 19
+        }
+      },
+      "raw": "s text is after"
+    },
+    {
+      "type": "Text",
+      "value": "\r\n\r\n",
+      "range": {
+        "start": {
+          "offset": 104,
+          "line": 4,
+          "column": 19
+        },
+        "end": {
+          "offset": 108,
+          "line": 4,
+          "column": 23
+        }
+      },
+      "raw": " the"
+    },
+    {
+      "type": "Text",
+      "value": "\n",
+      "range": {
+        "start": {
+          "offset": 108,
+          "line": 4,
+          "column": 23
+        },
+        "end": {
+          "offset": 109,
+          "line": 4,
+          "column": 24
+        }
+      },
+      "raw": " "
+    },
+    {
+      "type": "Command",
+      "rawContent": "define:doc",
+      "range": {
+        "start": {
+          "offset": 109,
+          "line": 4,
+          "column": 24
+        },
+        "end": {
+          "offset": 121,
+          "line": 5,
+          "column": 4
+        }
+      },
+      "raw": "import.\r\n{Re"
+    },
+    {
+      "type": "Text",
+      "value": "\r\n\r\n\r\n",
+      "range": {
+        "start": {
+          "offset": 121,
+          "line": 5,
+          "column": 4
+        },
+        "end": {
+          "offset": 127,
+          "line": 5,
+          "column": 10
+        }
+      },
+      "raw": "dPlane"
+    },
+    {
+      "type": "Command",
+      "rawContent": "h1:This is my first H1 heading",
+      "range": {
+        "start": {
+          "offset": 127,
+          "line": 5,
+          "column": 10
+        },
+        "end": {
+          "offset": 159,
+          "line": 7,
+          "column": 23
+        }
+      },
+      "raw": "t2015}\r\n\r\n// This defines a comm"
+    },
+    {
+      "type": "Text",
+      "value": "\r\n\r\nSomething interesting happened on Pluto ",
+      "range": {
+        "start": {
+          "offset": 159,
+          "line": 7,
+          "column": 23
+        },
+        "end": {
+          "offset": 203,
+          "line": 11,
+          "column": 22
+        }
+      },
+      "raw": "and\r\n{define:doc}\r\n\r\n\r\n{h1:This is my first "
+    },
+    {
+      "type": "Command",
+      "rawContent": "cite:RedPlanet2015",
+      "range": {
+        "start": {
+          "offset": 203,
+          "line": 11,
+          "column": 22
+        },
+        "end": {
+          "offset": 223,
+          "line": 13,
+          "column": 6
+        }
+      },
+      "raw": "H1 heading}\r\n\r\nSomet"
+    },
+    {
+      "type": "Text",
+      "value": ".\r\n\r\n\r\n",
+      "range": {
+        "start": {
+          "offset": 223,
+          "line": 13,
+          "column": 6
+        },
+        "end": {
+          "offset": 230,
+          "line": 13,
+          "column": 13
+        }
+      },
+      "raw": "hing in"
+    },
+    {
+      "type": "LiteralBlock",
+      "delimiterLength": 3,
+      "content": "\r\n\r\n@misc{RedPlanet2015,\r\ntitle        = \"Pluto: The 'Other' Red Planet\",\r\nauthor       = \"{NASA}\",\r\nhowpublished = \"\\url{https://www.nasa.gov/nh/pluto-the-other-red-planet}\",\r\nyear         = 2015,\r\nnote         = \"Accessed: 2018-12-06\"\r\n}\r\n\r\n",
+      "range": {
+        "start": {
+          "offset": 230,
+          "line": 13,
+          "column": 13
+        },
+        "end": {
+          "offset": 479,
+          "line": 22,
+          "column": 15
+        }
+      },
+      "raw": "teresting happened on Pluto {cite:RedPlanet2015}.\r\n\r\n\r\n{{{\r\n\r\n@misc{RedPlanet2015,\r\ntitle        = \"Pluto: The 'Other' Red Planet\",\r\nauthor       = \"{NASA}\",\r\nhowpublished = \"\\url{https://www.nasa.gov/nh/pluto-the-other-red-planet}\",\r\nyear         ="
+    }
+  ]
+}

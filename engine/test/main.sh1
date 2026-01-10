@@ -2,9 +2,10 @@
 This text is before the import.
 {import:lib/html.sh1}
 This text is after the import.
-
 {RedPlanet2015}
 
+// This defines a command
+{define:doc}
 
 
 {h1:This is my first H1 heading}
@@ -23,3 +24,7 @@ note         = "Accessed: 2018-12-06"
 }
 
 }}}
+
+
+
+// {config:bibliography.style=apa6}
