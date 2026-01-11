@@ -1,0 +1,22 @@
+**/*
+!dist/**
+!syntaxes/**
+!language-configuration.json
+!README.md
+!LICENSE
+!LICENSE.txt
+!CHANGELOG.md
+!seamlex.png
+
+# Never include these
+**/.git/**
+**/node_modules/**
+**/*.ts
+**/src/**
+**/tsconfig.json
+**/*.map
+**/*.vsix
+**/engine/**
+**/package-lock.json
+**/package.json
+../**

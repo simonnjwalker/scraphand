@@ -1,3 +1,14 @@
+## [1.0.4] - 2026-01-11
+### Fixed
+- Intellisense now inside definition functions
+- Functions inside comments are now skipped
+- Undefined functions will now be red in VS Code
+
+## [1.0.3] - 2026-01-10
+### Added
+- Linked libraries to load/links modules in order
+- Only import/define/config commands are reserved for the language
+
 ## [1.0.2] - 2026-01-07
 ### Added
 - Simple intellisense for .sh1 files

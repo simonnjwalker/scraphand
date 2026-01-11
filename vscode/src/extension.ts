@@ -1,4 +1,8 @@
 import * as vscode from "vscode";
+import { CommandIndex } from "./intellisense/indexer";
+import { registerArgumentIntellisense } from "./intellisense/argCompletion";
+import { scanCommands } from "./intellisense/parser";
+import * as path from "node:path";
 
 type CommandOrigin = "builtin" | "library";
 
@@ -36,39 +40,34 @@ export const SUGGESTED_COMMANDS = [
   "i",
 ];
 
-// ---------------- Parser (MVP regex) ----------------
-// Finds {command:arg} (arg optional). This is intentionally minimal.
-const COMMAND_BLOCK = /\{([A-Za-z_][A-Za-z0-9_-]*)(?::([^{}]*))?\}/g;
+
+
 
 function getCommandAtPosition(
   doc: vscode.TextDocument,
   pos: vscode.Position
 ): { name: string; range: vscode.Range } | null {
-  const line = doc.lineAt(pos.line);
-  const text = line.text;
+  const text = doc.getText();
+  const offset = doc.offsetAt(pos);
 
-  let match: RegExpExecArray | null;
-  COMMAND_BLOCK.lastIndex = 0;
+  for (const tok of scanCommands(text)) {
+    // token spans from '{' to '}'
+    if (offset < tok.startOffset || offset > tok.endOffset) continue;
 
-  while ((match = COMMAND_BLOCK.exec(text)) !== null) {
-    const fullStart = match.index;
-    const fullEnd = match.index + match[0].length;
+    const cmdStartOffset = tok.startOffset + 1; // after '{'
+    const cmdEndOffset = cmdStartOffset + tok.name.length;
 
-    const cmd = match[1];
-    const cmdStart = fullStart + 1; // after '{'
-    const cmdEnd = cmdStart + cmd.length;
+    const range = new vscode.Range(
+      doc.positionAt(cmdStartOffset),
+      doc.positionAt(cmdEndOffset)
+    );
 
-    const col = pos.character;
-    if (col >= fullStart && col <= fullEnd) {
-      const range = new vscode.Range(
-        new vscode.Position(pos.line, cmdStart),
-        new vscode.Position(pos.line, cmdEnd)
-      );
-      return { name: cmd, range };
-    }
+    return { name: tok.name, range };
   }
+
   return null;
 }
+
 
 function isInsideCommandNameArea(doc: vscode.TextDocument, pos: vscode.Position): boolean {
   const line = doc.lineAt(pos.line).text;
@@ -83,7 +82,7 @@ function isInsideCommandNameArea(doc: vscode.TextDocument, pos: vscode.Position)
 }
 
 // ---------------- Import + Define indexing ----------------
-class CommandIndex {
+class ScraphandCommandIndex {
   private libraryCommands = new Map<string, CommandInfo>();
 
   // Hard-coded example library command so you see it immediately even without imports
@@ -146,74 +145,87 @@ class CommandIndex {
   }
 }
 
+
+
 function findImports(doc: vscode.TextDocument): { path: string }[] {
   const text = doc.getText();
   const out: { path: string }[] = [];
-  let match: RegExpExecArray | null;
 
-  COMMAND_BLOCK.lastIndex = 0;
-  while ((match = COMMAND_BLOCK.exec(text)) !== null) {
-    const cmd = match[1];
-    const arg = (match[2] ?? "").trim();
-    if (cmd === "import" && arg) out.push({ path: arg });
+  for (const tok of scanCommands(text)) {
+    if (tok.name !== "import") continue;
+    if (!tok.arg) continue;
+
+    const path = tok.arg.trim();
+    if (path) out.push({ path });
   }
+
   return out;
 }
 
-function findDefines(doc: vscode.TextDocument): { name: string; location: vscode.Location }[] {
+function findDefines(
+  doc: vscode.TextDocument
+): { name: string; location: vscode.Location }[] {
   const text = doc.getText();
   const out: { name: string; location: vscode.Location }[] = [];
-  let match: RegExpExecArray | null;
 
-  COMMAND_BLOCK.lastIndex = 0;
-  while ((match = COMMAND_BLOCK.exec(text)) !== null) {
-    const cmd = match[1];
-    const arg = (match[2] ?? "").trim();
-    if (cmd !== "define" || !arg) continue;
+  for (const tok of scanCommands(text)) {
+    if (tok.name !== "define") continue;
+    if (!tok.arg) continue;
 
-    // Point at the start of the "{define:...}" block (good enough for MVP)
-    const pos = doc.positionAt(match.index + 1);
-    out.push({ name: arg, location: new vscode.Location(doc.uri, pos) });
+    const name = tok.arg.trim();
+    if (!name) continue;
+
+    // Location: point at the command name inside "{define:...}"
+    const cmdNameOffset = tok.startOffset + 1; // after '{'
+    const pos = doc.positionAt(cmdNameOffset);
+
+    out.push({
+      name,
+      location: new vscode.Location(doc.uri, pos),
+    });
   }
+
   return out;
 }
 
+
+
 function resolveImportToUri(_from: vscode.Uri, importPath: string): vscode.Uri | null {
-  if (/^[a-zA-Z]:[\\/]/.test(importPath)) return vscode.Uri.file(importPath);
+  if (path.isAbsolute(importPath)) {
+    return vscode.Uri.file(importPath);
+  }
+
   const folder = vscode.workspace.workspaceFolders?.[0];
   if (!folder) return null;
+
   return vscode.Uri.joinPath(folder.uri, importPath);
 }
 
 
+
 // ---------------- Diagnostics (unknown commands) ----------------
+
 function computeDiagnostics(doc: vscode.TextDocument, index: CommandIndex): vscode.Diagnostic[] {
   const diags: vscode.Diagnostic[] = [];
   const text = doc.getText();
 
-  let match: RegExpExecArray | null;
-  COMMAND_BLOCK.lastIndex = 0;
+  for (const tok of scanCommands(text)) {
+    const info = index.getCommand(tok.name);
+    if (info) continue; // builtin OR library command
 
-  while ((match = COMMAND_BLOCK.exec(text)) !== null) {
-    const cmd = match[1];
+    // unknown
+    const cmdStart = tok.startOffset + 1; // after '{'
+    const cmdEnd = cmdStart + tok.name.length;
+    const range = new vscode.Range(doc.positionAt(cmdStart), doc.positionAt(cmdEnd));
 
-    const cmdStartOffset = match.index + 1;
-    const cmdEndOffset = cmdStartOffset + cmd.length;
-
-    const range = new vscode.Range(doc.positionAt(cmdStartOffset), doc.positionAt(cmdEndOffset));
-
-    const isBuiltin = cmd in BUILTINS;
-    const isKnownLib = index.getCommand(cmd)?.origin === "library";
-
-    if (!isBuiltin && !isKnownLib) {
-      const d = new vscode.Diagnostic(range, `Unknown command "${cmd}".`, vscode.DiagnosticSeverity.Error);
-      d.source = "scraphand";
-      diags.push(d);
-    }
+    const d = new vscode.Diagnostic(range, `Unknown command "${tok.name}".`, vscode.DiagnosticSeverity.Error);
+    d.source = "scraphand";
+    diags.push(d);
   }
 
   return diags;
 }
+
 
 // ---------------- Semantic tokens (editor coloring) ----------------
 // builtin -> keyword, library -> function, unknown -> invalid
@@ -224,38 +236,62 @@ function buildSemanticTokens(doc: vscode.TextDocument, index: CommandIndex): vsc
   const builder = new vscode.SemanticTokensBuilder(legend);
   const text = doc.getText();
 
-  let match: RegExpExecArray | null;
-  COMMAND_BLOCK.lastIndex = 0;
-
-  while ((match = COMMAND_BLOCK.exec(text)) !== null) {
-    const cmd = match[1];
-    const cmdStartOffset = match.index + 1;
-    const pos = doc.positionAt(cmdStartOffset);
+  for (const tok of scanCommands(text)) {
+    const info = index.getCommand(tok.name);
 
     const tokenType =
-      cmd in BUILTINS ? "keyword" : index.getCommand(cmd) ? "function" : "invalid";
+      info?.origin === "builtin"
+        ? "keyword"
+        : info?.origin === "library"
+          ? "function"
+          : "invalid";
 
-    builder.push(pos.line, pos.character, cmd.length, tokenTypes.indexOf(tokenType), 0);
+    const cmdStartOffset = tok.startOffset + 1; // after '{'
+    const pos = doc.positionAt(cmdStartOffset);
+
+    builder.push(
+      pos.line,
+      pos.character,
+      tok.name.length,
+      tokenTypes.indexOf(tokenType),
+      0
+    );
   }
 
   return builder.build();
 }
 
+
+
+
+
+
 // ---------------- Activate ----------------
 export function activate(context: vscode.ExtensionContext) {
-  const index = new CommandIndex();
-
-  // Optional: seed h1 without imports; remove once your library import is working.
-  // index.seedHardcodedH1();
 
   const diagnostics = vscode.languages.createDiagnosticCollection("scraphand");
   context.subscriptions.push(diagnostics);
 
+
+  // Optional: seed h1 without imports; remove once your library import is working.
+  // index.seedHardcodedH1();
+
+  const index = new CommandIndex();
+  registerArgumentIntellisense(context, index);
+
   async function refresh(doc: vscode.TextDocument) {
     if (doc.languageId !== "scraphand") return;
-    await index.rebuildFromDocumentImports(doc);
+    await index.rebuildForDocument(doc);
     diagnostics.set(doc.uri, computeDiagnostics(doc, index));
   }
+
+
+
+  // async function refresh(doc: vscode.TextDocument) {
+  //   if (doc.languageId !== "scraphand") return;
+  //   await index.rebuildFromDocumentImports(doc);
+  //   diagnostics.set(doc.uri, computeDiagnostics(doc, index));
+  // }
 
   // Refresh on edits/open/switch
   context.subscriptions.push(

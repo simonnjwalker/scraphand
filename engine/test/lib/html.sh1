@@ -1,5 +1,5 @@
 // My HTML library.
-{define:h1}
+{define:h1,doc="Heading level 1",args="text"}
 {define:p}
 {define:div}
 //{config:bibliography.style=apa7}

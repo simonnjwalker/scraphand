@@ -1,12 +1,17 @@
 {
-  "name": "vscode",
+  "name": "scraphand",
   "displayName": "Scraphand (.sh1)",
   "description": "VS Code support for the Scraphand (.sh1) language",
   "version": "0.0.1",
   "publisher": "scraphand",
   "author": "Simon Walker",
   "license": "MIT",
-  "private": true,
+  "private": false,
+
+  "homepage": "https://github.com/simonnjwalker/scraphand",
+  "bugs": { "url": "https://github.com/simonnjwalker/scraphand/issues" },
+
+  "icon": "seamlex.png",
 
   "engines": {
     "vscode": "^1.90.0"
@@ -56,17 +61,7 @@
     "@types/node": "^20.0.0",
     "@types/vscode": "^1.90.0",
     "typescript": "^5.4.0"
-  },
-
-  "files": [
-    "dist/**",
-    "language-configuration.json",
-    "syntaxes/**",
-    "README.md",
-    "LICENSE",
-    "CHANGELOG.md"
-  ]
-
+  }
 
   
 }
