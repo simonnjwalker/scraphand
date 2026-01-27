@@ -1,0 +1,14 @@
+{
+  "name": "sh1-cite",
+  "version": "0.2.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "sh1-runtime": "*",
+    "sh1-docgen": "*"
+  }
+}

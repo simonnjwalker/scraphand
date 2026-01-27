@@ -7,14 +7,14 @@
 
   "workspaces": [
     "engine",
-    "vscode"
+    "vscode",
+    "modules/*"
   ],
 
   "scripts": {
-    "build": "npm run build -w engine",
-    "clean": "npm run clean -w engine",
-    "build:all": "npm run build -w engine && npm run build -w vscode",
-    "install:all": "npm install",
-    "dev:engine": "npm run dev -w engine"
+    "build": "npm run build -w engine && npm run build -w vscode && npm run build -ws --if-present",
+    "build:modules": "npm run build -ws --if-present",
+    "clean:modules": "npm run clean -ws --if-present"
   }
+
 }

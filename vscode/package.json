@@ -2,7 +2,7 @@
   "name": "scraphand",
   "displayName": "Scraphand (.sh1)",
   "description": "VS Code support for the Scraphand (.sh1) language",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "publisher": "scraphand",
   "author": "Simon Walker",
   "license": "MIT",

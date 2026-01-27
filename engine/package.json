@@ -1,6 +1,6 @@
 {
   "name": "engine",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "Core language engine for the Scraphand (.sh1) language",
   "author": "Simon Walker",
   "license": "MIT",
@@ -19,6 +19,7 @@
   },
 
   "dependencies": {
+    "sh1-runtime": "*"
   },
 
   "devDependencies": {

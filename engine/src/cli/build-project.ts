@@ -1,65 +1,83 @@
 // engine/src/cli/build-project.ts
 import path from "node:path";
+import fsPromises from "node:fs/promises";
 import { NodeFS } from "../project/fs";
 import { buildProjectRuntime } from "../project/buildProject";
 import { parse } from "../core/parser";
 import { extractCommandsFromScraphandAst } from "../project/adapter";
+import { loadPlugins } from "../runtime/moduleLoader";
+import { runPlugins } from "../runtime/runPlugins";
+import type { HostAPI, ConfigLike } from "sh1-runtime";
+import { parsePlugins } from "../runtime/parsePlugins";
 
-export async function buildProject(entryFile: string) {
+async function ensureDirForFile(absPath: string) {
+  await fsPromises.mkdir(path.dirname(absPath), { recursive: true });
+}
+
+export async function buildProject(entryFile: string, pluginNames: string[] = []) {
   const fs = new NodeFS();
 
   const runtime = await buildProjectRuntime({
     fs,
-    importResolver: {
-      base: "fileDir", // or "workspaceRoot"
-      extensions: [".sh1"],
-      // workspaceRoot: process.cwd(), // only if using workspaceRoot
-    },
+    importResolver: { base: "fileDir", extensions: [".sh1"] },
     graph: {
       entryFile: path.resolve(entryFile),
       parse: (text, fileId) => parse(text, fileId),
       extractCommands: extractCommandsFromScraphandAst,
-      // No implicitLibraries here anymore.
-      // Implicit loading is now handled by projectGraph.ts via myfile.*.sh1 companions.
     },
     symbols: { enforceUnique: false },
   });
 
-  return runtime;
-}
+  const absEntry = path.resolve(entryFile);
+  const entryDir = path.dirname(absEntry);
 
+  const host: HostAPI = {
+    cwd: process.cwd(),
 
-// Optional: allow running this file directly too
-async function main() {
-  const entryArg = process.argv[2];
-  if (!entryArg) {
-    console.error("Usage: build-project <entry-file>");
-    process.exit(1);
-  }
+    resolveOutputPath(relPath: string) {
+      return path.resolve(entryDir, relPath);
+    },
 
-  const runtime = await buildProject(entryArg);
+    async writeTextFile(absPath: string, content: string) {
+      await ensureDirForFile(absPath);
+      await fsPromises.writeFile(absPath, content, "utf8");
+    },
 
-  console.log("=== Diagnostics ===");
-  console.log(runtime.diagnostics.all());
+    async writeBinaryFile(absPath: string, data: Uint8Array) {
+      await ensureDirForFile(absPath);
+      await fsPromises.writeFile(absPath, data);
+    },
 
-  console.log("\n=== Files ===");
-  for (const f of runtime.graph.documents.keys()) console.log(" ", f);
+    async readBinaryFile(absPath: string) {
+      const buf = await fsPromises.readFile(absPath);
+      return new Uint8Array(buf);
+    },
+  };
 
-  console.log("\n=== Imports ===");
-  for (const e of runtime.graph.edges) {
-    console.log(` ${e.from} -> ${e.to} via ${e.via ?? ""}`.trimEnd());
-  }
+  const engineConfig: ConfigLike = parsePlugins(runtime.graph);
 
-  console.log("\n=== Symbols ===");
-  for (const [name, defs] of runtime.symbols.defs) {
-    for (const d of defs) console.log(` ${name} defined in ${d.definedIn}`);
-  }
-}
+  const requested = pluginNames.length ? pluginNames : engineConfig.plugins ?? [];
+  const { plugins, missing } = await loadPlugins(requested);
 
-if (require.main === module) {
-  main().catch((err) => {
-    console.error(err);
-    process.exit(1);
+  const missingWarnings = missing.map((m: { name: string; error: string }) => ({
+    severity: "warning" as const,
+    code: "W_PLUGIN_NOT_FOUND",
+    message: `Plugin not loaded: ${m.name}\n${m.error}`,
+  }));
+
+  const { artifacts, diagnostics } = await runPlugins(plugins, {
+    entryFile: runtime.graph.entryFile,
+    project: runtime.graph,
+    host,
+    config: engineConfig,
   });
-}
 
+  diagnostics.unshift(...missingWarnings);
+
+  if (diagnostics.length) {
+    console.log("=== Plugin diagnostics ===");
+    for (const d of diagnostics) console.log(`[${d.severity}] ${d.message}`);
+  }
+
+  return { runtime, artifacts, diagnostics };
+}

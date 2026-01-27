@@ -2,7 +2,6 @@
 This text is before the import.
 {import:lib/html.sh1}
 This text is after the import.
-{RedPlanet2015}
 
 {config:bibliography.style!=apa6}
 
@@ -11,11 +10,97 @@ This text is after the import.
 
 {h1:This is my first H1 heading}
 
+This is a paragraph with {i:italics} and in {b:bold}.
+
+
+// // Tag rendering modes
+// {config:render.tag.mode=show-only}
+// {config:render.tag.showCore=false}
+// {config:render.tag.unknownOnly=true}
+
+
+// // Line-break modes
+// {config:text.lineBreakMode=latexish}
+// {config:text.lineJoiner= " "}
+
+// outputs
+
+
+
+This is a claim {cite:smith2020} and another {cite:jones2019,p=12}.
+
+
 {p:This is a paragraph}
+
+
+
+
+{block:type=bibtex,next=2}
+{{{ @article{a,...} }}}
+{{{ @article{b,...} }}}
+{{{ @article{c,...} }}}
+
+{block:type=text}
+{{{
+Shall I compare thee to a summer day?
+}}}
+
+
+
+{h2:This a LaTeX block:}
+
+{{{
+\frac{a}{b} = c
+}}}
+
+Inline Math form:
+{block:type=latex}
+
+{{{
+E = mc^2
+}}}
+
+TeX display:
+
+{{{
+\frac{a}{b} = c
+}}}
+
+explicit delimiters:
+
+{{{
+\[
+\int_0^1 x^2\,dx
+\]
+}}}
+
+
+// {config:outputs+=[type=html,path=out/cite-test.html]}
+// //{config:outputs+=[type=html,path=out/second.html]}
+// {config:plugins+=sh1-docgen,plugins+=sh1-cite,plugins+=sh1-html,plugins+=sh1-docx}
+
+// {config:outputs+=[type=docx,path=out/report.docx]}
+
+// {config:plugins+=sh1-docgen,plugins+=sh1-html,plugins+=sh1-docx,outputs+=[plugin=sh1-docx,type=docx,path=out/report.docx]}
+
+
+
+{h1:Hello}
+
+This is {b:bold}, {i:italic}, and {u:underlined}.
+
+
+
+{config:outputs+=[type=html,path=out/test.html]}
+{config:outputs+=[type=docx,path=out/test.docx]}
+{config:plugins+=sh1-docgen,plugins+=sh1-html,plugins+=sh1-docx,plugins+=sh1-cite}
+
+
 
 Something interesting happened on Pluto {cite:RedPlanet2015}.
 
 
+{block:type=bibtex,next=1}
 {{{
 
 @misc{RedPlanet2015,
@@ -28,9 +113,18 @@ note         = "Accessed: 2018-12-06"
 
 }}}
 
+
+{bibliography:type=apa7}
+
+
+{bibliography:}
+
+
+
 /*
 
 // {config:bibliography.style=apa6}
 
 
 */
+

@@ -1,8 +1,12 @@
+## [1.0.5] - 2026-01-27
+### Fixed
+- Now creates a basic bibliography
+
 ## [1.0.4] - 2026-01-11
 ### Fixed
 - Intellisense now inside definition functions
 - Functions inside comments are now skipped
-- Undefined functions will now be red in VS Code
+- Undefined functions will now be red inside VS Code
 
 ## [1.0.3] - 2026-01-10
 ### Added
@@ -20,4 +24,4 @@
 
 ## [1.0.0] - 2025-11-22
 ### Added
-- Initial release.
+- Initial release

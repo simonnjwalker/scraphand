@@ -2,9 +2,7 @@ This is an auto-linked library for main.sh1.
 It can contain defines/config later.
 
 
-{config:importing.rootdir=fileDir,importing.paths+=lib,importing.paths+=engine/lib}
-
-{config:plugins+=core,plugins+=html,plugins+=bibtex,plugins+=latex,plugins+=docx,outputs+=[type=docx,path=out/report.docx]}
+// {config:importing.rootdir=fileDir,importing.paths+=lib,importing.paths+=engine/lib}
 
 // {config:bibliography.style=apa7}
 

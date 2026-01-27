@@ -1,0 +1,1 @@
+export const moduleName = "sh1-typst";

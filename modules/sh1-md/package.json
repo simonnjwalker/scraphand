@@ -1,0 +1,15 @@
+{
+  "name": "sh1-md",
+  "version": "0.2.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist/**"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rmdir /s /q dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}
